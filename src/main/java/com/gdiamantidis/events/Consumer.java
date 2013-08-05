@@ -1,11 +1,8 @@
 package com.gdiamantidis.events;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
-import akka.actor.Props;
 import akka.actor.UntypedActor;
 import com.espertech.esper.client.*;
-import com.gdiamantidis.Producer;
 
 import java.util.Map;
 
@@ -24,7 +21,7 @@ public class Consumer extends UntypedActor {
 
         EPStatement epl = epAdministrator.createEPL("select avg(count) as avg_val from AddCommentEvent.win:time_batch(5 sec)");
         epl.setSubscriber(new Subscriber());
-        producer = getContext().system().actorSelection("../producer");
+        producer = getContext().system().actorSelection("user/producer");
     }
 
 
@@ -46,7 +43,7 @@ public class Consumer extends UntypedActor {
         if (event instanceof AddCommentEvent) {
             epService.getEPRuntime().sendEvent(event);
             System.out.println("Received " + event.getClass().getSimpleName());
-        } else  {
+        } else {
             unhandled(event);
         }
     }
