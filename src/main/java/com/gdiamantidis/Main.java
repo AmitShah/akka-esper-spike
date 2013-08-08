@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import com.gdiamantidis.events.AddCommentEvent;
+import com.gdiamantidis.events.Consumer;
 
 public class Main {
 
@@ -11,6 +12,7 @@ public class Main {
         ActorSystem simpleSystem = ActorSystem.create("SimpleSystem");
 
         ActorRef producer = simpleSystem.actorOf(new Props(Producer.class), "producer");
+        simpleSystem.actorOf(new Props(Consumer.class), "consumer");
 
         int noOfEvents = 100;
 

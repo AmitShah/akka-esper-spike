@@ -1,27 +1,27 @@
 package com.gdiamantidis;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
+import akka.actor.*;
 import com.gdiamantidis.events.AddCommentEvent;
 import com.gdiamantidis.events.AverageCountEvent;
 import com.gdiamantidis.events.Consumer;
-import com.gdiamantidis.events.Event;
+import scala.concurrent.Await;
 
 public class Producer extends UntypedActor {
+    private ActorRef target;
 
-    private final ActorRef consumer;
-
-    public Producer() {
-        consumer = getContext().system().actorOf(new Props(Consumer.class), "consumer");
-    }
 
     @Override
-    public void onReceive(Object o) throws Exception {
-        if(o instanceof AddCommentEvent) {
-            consumer.tell(o, getSelf());
-        } else if(o instanceof AverageCountEvent) {
-            System.out.println("[PRODUCER] average count " + ((AverageCountEvent) o).getCount());
+    public void onReceive(Object event) throws Exception {
+        if (event instanceof AddCommentEvent) {
+            ActorSelection actorSelection = getContext().system().actorSelection("user/consumer");
+            actorSelection.tell(event, getSelf());
+            getSender().tell("got it", getSelf());
+            if (target != null) target.forward(event, getContext());
+        } else if (event instanceof AverageCountEvent) {
+            System.out.println("[PRODUCER] average count " + ((AverageCountEvent) event).getCount());
+        }    else if (event instanceof ActorRef) {
+            target = (ActorRef) event;
+            getSender().tell("done", getSelf());
         }
     }
 }

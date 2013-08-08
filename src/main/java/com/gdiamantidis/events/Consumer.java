@@ -1,7 +1,9 @@
 package com.gdiamantidis.events;
 
+import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
+import akka.pattern.AskSupport;
 import com.espertech.esper.client.*;
 
 import java.util.Map;
@@ -11,6 +13,7 @@ public class Consumer extends UntypedActor {
 
     private final EPServiceProvider epService;
     private final ActorSelection producer;
+    private ActorRef target;
 
     public Consumer() {
         Configuration config = new Configuration();
@@ -26,15 +29,9 @@ public class Consumer extends UntypedActor {
 
 
     public class Subscriber {
-
         public void update(Map<String, Double> eventMap) {
-
-            // average temp over 10 secs
-            Double avg = (Double) eventMap.get("avg_val");
-            System.out.println("avg = " + avg);
-
+            Double avg = eventMap.get("avg_val");
             producer.tell(new AverageCountEvent(avg), getSelf());
-
         }
     }
 
@@ -42,9 +39,11 @@ public class Consumer extends UntypedActor {
     public void onReceive(Object event) throws Exception {
         if (event instanceof AddCommentEvent) {
             epService.getEPRuntime().sendEvent(event);
-            System.out.println("Received " + event.getClass().getSimpleName());
-        } else {
-            unhandled(event);
+            System.out.println("Received " + event.getClass().getSimpleName() + " count: " + ((AddCommentEvent) event).getCount());
+            if (target != null) target.forward(event, getContext());
+        }  else if (event instanceof ActorRef) {
+            target = (ActorRef) event;
+            getSender().tell("done", getSelf());
         }
     }
 }
