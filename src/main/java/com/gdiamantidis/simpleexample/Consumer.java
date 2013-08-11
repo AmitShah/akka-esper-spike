@@ -1,10 +1,11 @@
-package com.gdiamantidis.events;
+package com.gdiamantidis.simpleexample;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
-import akka.pattern.AskSupport;
 import com.espertech.esper.client.*;
+import com.gdiamantidis.simpleexample.events.AddCommentEvent;
+import com.gdiamantidis.simpleexample.events.AverageCountEvent;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class Consumer extends UntypedActor {
 
     public Consumer() {
         Configuration config = new Configuration();
-        config.addEventTypeAutoName("com.gdiamantidis.events");
+        config.addEventTypeAutoName("com.gdiamantidis.simpleexample.events");
 
         epService = EPServiceProviderManager.getDefaultProvider(config);
         EPAdministrator epAdministrator = epService.getEPAdministrator();
@@ -41,7 +42,7 @@ public class Consumer extends UntypedActor {
             epService.getEPRuntime().sendEvent(event);
             System.out.println("Received " + event.getClass().getSimpleName() + " count: " + ((AddCommentEvent) event).getCount());
             if (target != null) target.forward(event, getContext());
-        }  else if (event instanceof ActorRef) {
+        } else if (event instanceof ActorRef) {
             target = (ActorRef) event;
             getSender().tell("done", getSelf());
         }

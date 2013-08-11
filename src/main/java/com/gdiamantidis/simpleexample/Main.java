@@ -1,10 +1,9 @@
-package com.gdiamantidis;
+package com.gdiamantidis.simpleexample;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import com.gdiamantidis.events.AddCommentEvent;
-import com.gdiamantidis.events.Consumer;
+import com.gdiamantidis.simpleexample.events.AddCommentEvent;
 
 public class Main {
 

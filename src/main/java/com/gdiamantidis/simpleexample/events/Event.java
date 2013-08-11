@@ -1,4 +1,4 @@
-package com.gdiamantidis.events;
+package com.gdiamantidis.simpleexample.events;
 
 import java.io.Serializable;
 

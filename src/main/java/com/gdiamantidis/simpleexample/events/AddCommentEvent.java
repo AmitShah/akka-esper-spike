@@ -1,4 +1,4 @@
-package com.gdiamantidis.events;
+package com.gdiamantidis.simpleexample.events;
 
 public class AddCommentEvent implements Event {
 

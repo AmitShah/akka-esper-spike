@@ -1,10 +1,10 @@
-package com.gdiamantidis;
+package com.gdiamantidis.simpleexample;
 
-import akka.actor.*;
-import com.gdiamantidis.events.AddCommentEvent;
-import com.gdiamantidis.events.AverageCountEvent;
-import com.gdiamantidis.events.Consumer;
-import scala.concurrent.Await;
+import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
+import akka.actor.UntypedActor;
+import com.gdiamantidis.simpleexample.events.AddCommentEvent;
+import com.gdiamantidis.simpleexample.events.AverageCountEvent;
 
 public class Producer extends UntypedActor {
     private ActorRef target;
@@ -19,7 +19,7 @@ public class Producer extends UntypedActor {
             if (target != null) target.forward(event, getContext());
         } else if (event instanceof AverageCountEvent) {
             System.out.println("[PRODUCER] average count " + ((AverageCountEvent) event).getCount());
-        }    else if (event instanceof ActorRef) {
+        } else if (event instanceof ActorRef) {
             target = (ActorRef) event;
             getSender().tell("done", getSelf());
         }

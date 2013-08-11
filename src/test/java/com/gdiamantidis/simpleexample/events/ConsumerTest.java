@@ -1,10 +1,10 @@
-package com.gdiamantidis.events;
+package com.gdiamantidis.simpleexample.events;
 
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.pattern.Patterns;
 import akka.testkit.TestActorRef;
-import com.gdiamantidis.Producer;
+import com.gdiamantidis.simpleexample.Consumer;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
